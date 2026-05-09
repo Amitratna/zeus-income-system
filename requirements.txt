@@ -1,0 +1,28 @@
+# Zeus Income System - Requirements
+# Core
+python-dotenv>=1.0.0
+requests>=2.31.0
+
+# Data & Processing
+pandas>=2.0.0
+openai>=1.0.0
+
+# Web Automation
+selenium>=4.0.0
+beautifulsoup4>=4.12.0
+
+# Etsy/Gumroad API (mock for now)
+# EtsySDK>=1.0.0
+# gumroad-api>=1.0.0
+
+# Storage
+tinydb>=4.8.0
+json5>=0.9.0
+
+# Deployment
+gunicorn>=21.0.0
+flask>=3.0.0
+
+# Utilities
+schedule>=1.2.0
+pytz>=2023.3

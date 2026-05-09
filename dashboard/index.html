@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💰 Zeus Income System - Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg-dark: #0f0f23;
+            --bg-card: rgba(255,255,255,0.05);
+            --accent-cyan: #00d4ff;
+            --accent-purple: #7c3aed;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --text-primary: #fff;
+            --text-secondary: #a0a0a0;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1a2e 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+        
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+            border-radius: 16px;
+            margin-bottom: 30px;
+        }
+        
+        .logo h1 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2rem;
+        }
+        
+        .header-stats {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .header-stat {
+            text-align: center;
+        }
+        
+        .header-stat .value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .header-stat .label {
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+        
+        /* Main Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        
+        .stat-card:hover { transform: translateY(-5px); }
+        
+        .stat-card .icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+        }
+        
+        .stat-card .label {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+        
+        /* Sections */
+        .section {
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* Agent Grid */
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 15px;
+        }
+        
+        .agent-card {
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .agent-card .symbol { font-size: 1.5rem; }
+        .agent-card .name { font-weight: 600; font-size: 0.85rem; margin: 5px 0; }
+        .agent-card .status {
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+        
+        .status.idle { background: var(--warning); color: #000; }
+        .status.working { background: var(--accent-cyan); color: #000; }
+        .status.complete { background: var(--success); color: #000; }
+        
+        /* Products Table */
+        .products-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .products-table th, .products-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .products-table th {
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+        
+        .price { color: var(--success); font-weight: 600; }
+        
+        .platform-tag {
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            background: rgba(0,212,255,0.2);
+            color: var(--accent-cyan);
+            margin-right: 5px;
+        }
+        
+        /* Income Chart */
+        .chart-container {
+            height: 200px;
+            display: flex;
+            align-items: flex-end;
+            gap: 5px;
+            padding: 20px 0;
+        }
+        
+        .chart-bar {
+            flex: 1;
+            background: linear-gradient(to top, var(--accent-cyan), var(--accent-purple));
+            border-radius: 4px 4px 0 0;
+            min-height: 10px;
+            transition: height 0.3s;
+        }
+        
+        .chart-bar:hover {
+            background: linear-gradient(to top, var(--accent-purple), var(--accent-cyan));
+        }
+        
+        /* Actions */
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        
+        .btn:hover { transform: translateY(-2px); }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .dashboard-grid { grid-template-columns: repeat(2, 1fr); }
+            .agent-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+        
+        @media (max-width: 600px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .agent-grid { grid-template-columns: repeat(2, 1fr); }
+            header { flex-direction: column; gap: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <h1>💰 Zeus Income System</h1>
+                <p>Automated Digital Product Empire</p>
+            </div>
+            <div class="header-stats">
+                <div class="header-stat">
+                    <div class="value" id="totalRevenue">$0</div>
+                    <div class="label">Total Revenue</div>
+                </div>
+                <div class="header-stat">
+                    <div class="value" id="monthlyProjection">$0</div>
+                    <div class="label">Monthly Projection</div>
+                </div>
+                <div class="header-stat">
+                    <div class="value" id="productsListed">0</div>
+                    <div class="label">Products Listed</div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Stats Grid -->
+        <div class="dashboard-grid">
+            <div class="stat-card">
+                <div class="icon">📦</div>
+                <div class="value" id="productsGenerated">0</div>
+                <div class="label">Products Generated</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">🛍️</div>
+                <div class="value" id="etsyListings">0</div>
+                <div class="label">Etsy Listings</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">📦</div>
+                <div class="value" id="gumroadListings">0</div>
+                <div class="label">Gumroad Listings</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">📈</div>
+                <div class="value" id="conversionRate">0%</div>
+                <div class="label">Conversion Rate</div>
+            </div>
+        </div>
+        
+        <!-- Agent Workforce -->
+        <div class="section">
+            <div class="section-title">⚔️ Zeus Agent Workforce</div>
+            <div class="agent-grid">
+                <div class="agent-card">
+                    <div class="symbol">⚔️</div>
+                    <div class="name">ATHENA</div>
+                    <div class="status idle" id="status-athena">IDLE</div>
+                </div>
+                <div class="agent-card">
+                    <div class="symbol">📊</div>
+                    <div class="name">ANALYST</div>
+                    <div class="status idle" id="status-analyst">IDLE</div>
+                </div>
+                <div class="agent-card">
+                    <div class="symbol">💻</div>
+                    <div class="name">DEVELOPER</div>
+                    <div class="status idle" id="status-developer">IDLE</div>
+                </div>
+                <div class="agent-card">
+                    <div class="symbol">⚒️</div>
+                    <div class="name">HEPHAESTUS</div>
+                    <div class="status idle" id="status-hephaestus">IDLE</div>
+                </div>
+                <div class="agent-card">
+                    <div class="symbol">⚡</div>
+                    <div class="name">HERMES</div>
+                    <div class="status idle" id="status-hermes">IDLE</div>
+                </div>
+                <div class="agent-card">
+                    <div class="symbol">🌟</div>
+                    <div class="name">APOLLO</div>
+                    <div class="status idle" id="status-apollo">IDLE</div>
+                </div>
+                <div class="agent-card">
+                    <div class="symbol">🛡️</div>
+                    <div class="name">ARES</div>
+                    <div class="status idle" id="status-ares">IDLE</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Products -->
+        <div class="section">
+            <div class="section-title">📦 Recent Products</div>
+            <table class="products-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Category</th>
+                        <th>Platforms</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="productsTable">
+                    <!-- Products will be inserted here -->
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Income Chart -->
+        <div class="section">
+            <div class="section-title">📈 30-Day Income Trend</div>
+            <div class="chart-container" id="incomeChart">
+                <!-- Chart bars will be inserted here -->
+            </div>
+        </div>
+        
+        <!-- Actions -->
+        <div class="actions">
+            <button class="btn btn-primary" onclick="generateProducts()">
+                🎨 Generate Products
+            </button>
+            <button class="btn btn-secondary" onclick="listProducts()">
+                📤 List to Marketplaces
+            </button>
+            <button class="btn btn-secondary" onclick="refreshAnalytics()">
+                🔄 Refresh Analytics
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        // Demo data
+        const agents = ['athena', 'analyst', 'developer', 'hephaestus', 'hermes', 'apollo', 'ares'];
+        let products = [];
+        let isRunning = false;
+        
+        // Sample products data
+        const sampleProducts = [
+            { name: 'Procreate Watercolor Brushes', category: 'digital-art', platforms: ['etsy', 'gumroad'], price: 12.99, status: 'ready' },
+            { name: 'Cinematic Lightroom Presets', category: 'presets', platforms: ['gumroad'], price: 19.99, status: 'ready' },
+            { name: 'Figma Dashboard UI Kit', category: 'templates', platforms: ['etsy', 'gumroad'], price: 34.99, status: 'listed' },
+            { name: 'AI Prompt Master Library', category: 'education', platforms: ['gumroad'], price: 12.99, status: 'ready' },
+            { name: 'Next.js SaaS Starter', category: 'software', platforms: ['gumroad', 'github'], price: 79.99, status: 'ready' },
+        ];
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDashboard();
+        });
+        
+        async function loadDashboard() {
+            // Load sample data
+            products = sampleProducts;
+            updateStats();
+            renderProducts();
+            renderChart();
+        }
+        
+        function updateStats() {
+            document.getElementById('productsGenerated').textContent = products.length;
+            document.getElementById('productsListed').textContent = products.filter(p => p.status === 'listed').length;
+            document.getElementById('gumroadListings').textContent = products.filter(p => p.platforms.includes('gumroad')).length;
+            document.getElementById('etsyListings').textContent = products.filter(p => p.platforms.includes('etsy')).length;
+            document.getElementById('totalRevenue').textContent = '$2,847.50';
+            document.getElementById('monthlyProjection').textContent = '$1,245.00';
+            document.getElementById('productsListed').textContent = products.length;
+            document.getElementById('conversionRate').textContent = '3.2%';
+        }
+        
+        function renderProducts() {
+            const tbody = document.getElementById('productsTable');
+            tbody.innerHTML = products.map(p => `
+                <tr>
+                    <td>${p.name}</td>
+                    <td>${p.category}</td>
+                    <td>${p.platforms.map(pl => `<span class="platform-tag">${pl}</span>`).join('')}</td>
+                    <td class="price">$${p.price}</td>
+                    <td><span class="status ${p.status === 'listed' ? 'complete' : 'idle'}">${p.status}</span></td>
+                </tr>
+            `).join('');
+        }
+        
+        function renderChart() {
+            const container = document.getElementById('incomeChart');
+            // Generate random data for 30 days
+            const data = Array.from({length: 30}, () => Math.floor(Math.random() * 100) + 20);
+            const maxVal = Math.max(...data);
+            
+            container.innerHTML = data.map(val => `
+                <div class="chart-bar" style="height: ${(val/maxVal)*100}%"></div>
+            `).join('');
+        }
+        
+        // Actions
+        async function generateProducts() {
+            if (isRunning) return;
+            isRunning = true;
+            
+            const statusAgents = ['athena', 'analyst', 'hephaestus', 'developer', 'apollo', 'ares'];
+            
+            for (const agent of statusAgents) {
+                updateAgentStatus(agent, 'working');
+                await sleep(800);
+                updateAgentStatus(agent, 'complete');
+                await sleep(200);
+            }
+            
+            // Add new product
+            products.push({
+                name: `New Digital Product #${products.length + 1}`,
+                category: 'digital',
+                platforms: ['gumroad'],
+                price: (Math.random() * 40 + 10).toFixed(2),
+                status: 'ready'
+            });
+            
+            updateStats();
+            renderProducts();
+            isRunning = false;
+        }
+        
+        async function listProducts() {
+            alert('Listing products to Etsy and Gumroad...');
+            // Simulate listing
+            for (let i = 0; i < products.length; i++) {
+                if (products[i].status === 'ready') {
+                    products[i].status = 'listed';
+                }
+            }
+            updateStats();
+            renderProducts();
+            alert('Products listed successfully!');
+        }
+        
+        function refreshAnalytics() {
+            alert('Refreshing analytics...');
+            updateStats();
+            renderChart();
+        }
+        
+        function updateAgentStatus(agent, status) {
+            const el = document.getElementById(`status-${agent}`);
+            if (el) {
+                el.textContent = status.toUpperCase();
+                el.className = `status ${status}`;
+            }
+        }
+        
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+    </script>
+</body>
+</html>
